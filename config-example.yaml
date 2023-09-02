@@ -1,0 +1,5 @@
+entries:
+  - listen: "0.0.0.0:27017"
+    service: "mongo.default.svc.cluster.local:27017"
+  - listen: "0.0.0.0:5672"
+    service: "rabbit.default.svc.cluster.local:5672"
