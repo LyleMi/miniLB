@@ -7,6 +7,8 @@ import (
 )
 
 func forwardData(src, dst net.Conn) {
+	defer dst.Close()
+	defer src.Close()
 	_, err := io.Copy(dst, src)
 	if err != nil {
 		log.Printf("Failed to forward data: %v", err)
@@ -21,8 +23,12 @@ func handleConnection(entry *Entry, conn net.Conn) {
 		log.Printf("Failed to connect to target service: %v", err)
 		return
 	}
-	defer remote.Close()
 
+	/*
+	 * Close all connections simultaneously in the forwardData function.
+	 * Repetitive closing is necessary because when the client closes the connection
+	 * and the server does not actively close it, the connection will persist
+	 */
 	go forwardData(conn, remote)
 	forwardData(remote, conn)
 }
